@@ -1,0 +1,9 @@
+demo:
+  cache:
+    time-unit: MINUTES
+    duration: 5
+
+server:
+  #servlet:
+  #  context-path: /api
+  port: 8080

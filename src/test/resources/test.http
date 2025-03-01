@@ -1,0 +1,36 @@
+### Request 1 - ok
+POST http://{{host}}/giveMeAdvice
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id":1,
+  "jsonrpc":"2.0",
+  "method":"GiveMeAdvice",
+  "params":{
+    "topic":"cars"
+  }
+}
+
+### Request 1 - ko
+POST http://{{host}}/giveMeAdvice
+Content-Type: application/json
+Accept: application/json
+
+{
+}
+
+### Request 2 - ok
+POST http://{{host}}/giveMeAdvice
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id":1,
+  "jsonrpc":"2.0",
+  "method":"GiveMeAdvice",
+  "params":{
+    "topic":"love",
+    "amount":2
+  }
+}
