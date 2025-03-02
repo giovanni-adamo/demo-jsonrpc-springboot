@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JsonRpcResponse {
+public class JsonRpcResponseDto {
 
     @NotNull(message = "jsonrpc must not be null")
     private final String jsonrpc = "2.0";
@@ -21,7 +21,7 @@ public class JsonRpcResponse {
     @NotNull(message = "result must not be null")
     private Result<?> result;
 
-    public JsonRpcResponse(int id, List<String> adviceList) {
+    public JsonRpcResponseDto(int id, List<String> adviceList) {
         this.id = id;
         this.result = new Result(adviceList);
     }

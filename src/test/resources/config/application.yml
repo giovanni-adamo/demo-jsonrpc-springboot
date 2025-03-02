@@ -1,7 +1,9 @@
 demo:
+  advice-api-endpoint: https://api.adviceslip.com/advice/search/
   cache:
+    enabled: false
     time-unit: MINUTES
-    duration: 5
+    duration: 0
 
 server:
   #servlet:

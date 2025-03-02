@@ -2,23 +2,31 @@ package com.example.demo.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.googlecode.jsonrpc4j.JsonRpcServer;
+import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
-//@AutoJsonRpcServiceImpl
+@AutoJsonRpcServiceImpl
 public class AdviceServiceImpl implements AdviceService {
 
-    private final String API_URL = "https://api.adviceslip.com/advice/search/";
+    @Value("${demo.advice-api-endpoint}")
+    private String adviceApiEndpoint;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -28,35 +36,29 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     @Cacheable(value = "adviceCache", key = "#topic", unless = "#result.size() == 0")
-    public List<String> giveMeAdvice(String topic, int amount) {
+    public List<String> giveMeAdvice(String topic, Integer amount) {
 
-        List<String> adviceList = fetchAdvice(topic, amount);
-        return adviceList;
-    }
-
-    public String calculateSHA256Hash(String data) throws NoSuchAlgorithmException {
-
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
-
-        // Converti l'array di byte in una stringa esadecimale
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
-
-    private List<String> fetchAdvice(String topic, int amount) {
+        List<String> adviceList = null;
 
         try {
 
-            List<String> adviceList = new ArrayList<>();
-            ResponseEntity<String> response = restTemplate.getForEntity(API_URL + topic, String.class);
+            if (amount == null) {
+                amount = 1; // valore di default
+            }
+
+            if (amount != null && amount <= 0) {
+                amount = 0;
+            }
+
+            adviceList = new ArrayList<>();
+
+            // Call API
+            ResponseEntity<String> response = restTemplate.getForEntity(adviceApiEndpoint + topic, String.class);
+
+            // Get API result
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
 
+            // Read API result and build advice list
             int elem = jsonNode.path("slips").size();
             if (elem >= amount) {
                 for (int i = 0; i < amount; i++) {
@@ -70,7 +72,46 @@ public class AdviceServiceImpl implements AdviceService {
             return adviceList;
 
         } catch (Exception e) {
-            return null;
+
+            log.error("giveMeAdvice error", e);
+            return adviceList;
         }
+    }
+
+    @Override
+    public String callRpcMethod(String jsonRpcRequest) throws Exception {
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(jsonRpcRequest.getBytes(StandardCharsets.UTF_8));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        JsonRpcServer jsonRpcServer = new JsonRpcServer(
+                objectMapper,        // Jackson mapper
+                this,         // oggetto con i metodi
+                AdviceService.class  // interfaccia/metodo su cui fare reflection
+        );
+
+        // Invoke RPC method
+        jsonRpcServer.handleRequest(inputStream, outputStream);
+
+        // Get response by RPC method
+        String jsonRpcResponse = outputStream.toString(StandardCharsets.UTF_8);
+
+        return jsonRpcResponse;
+    }
+
+    @Override
+    public String calculateSHA256Hash(String data) throws NoSuchAlgorithmException {
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
+
+        // Convert byte array to hex string
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }

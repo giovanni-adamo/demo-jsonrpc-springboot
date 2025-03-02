@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -23,6 +24,11 @@ public class AppConfig {
     private TimeUnit timeUnit;
 
     @Bean
+    @ConditionalOnProperty(
+            value = "demo.cache.enabled",
+            havingValue = "true",
+            matchIfMissing = true
+    )
     public CacheManager cacheManager() {
 
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
@@ -34,9 +40,7 @@ public class AppConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+    public ObjectMapper objectMapper() { return new ObjectMapper(); }
 
     @Bean
     public RestTemplate restTemplate() {

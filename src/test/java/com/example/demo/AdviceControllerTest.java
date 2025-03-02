@@ -15,47 +15,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AdviceControllerTest {
 
-	private final String API = "/giveMeAdvice";
+	private final String API = "/advice";
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Test
-	public void testGiveMeAdvice() throws Exception {
-
-		// Simula il payload della richiesta JSON-RPC
-		String requestJson = """
-				{
-				  "id":1,
-				  "jsonrpc":"2.0",
-				  "method":"GiveMeAdvice",
-				  "params":{
-				    "topic":"cars"
-				  }
-				}
-				""";
-
-		// Esegui la richiesta e verifica lo stato della risposta
-		mockMvc.perform(post(API)
-						.contentType(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.characterEncoding("UTF-8")
-						.content(requestJson))
-				.andExpect(status().isOk());
-
-		/*assertThat(mvc.post().uri(API)
-				.contentType(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.characterEncoding("UTF-8")
-				.content(requestJson))
-				.hasStatusOk();
-		 */
-	}
-
-	@Test
 	public void testGiveMeAdviceWithAmount() throws Exception {
 
-		// Simula il payload della richiesta JSON-RPC
+		// Payload with topic and amount params
 		String requestJson = """
 				{
 				  "id":1,
@@ -68,12 +36,57 @@ public class AdviceControllerTest {
 				}
 				""";
 
-		// Esegui la richiesta e verifica lo stato della risposta
+		// Execute test and check response
 		mockMvc.perform(post(API)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(requestJson)
 						.characterEncoding("UTF-8")
 						.content(requestJson))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testGiveMeAdviceWithoutAmount() throws Exception {
+
+		// Payload without amount param
+		String requestJson = """
+				{
+				  "id":1,
+				  "jsonrpc":"2.0",
+				  "method":"GiveMeAdvice",
+				  "params":{
+				    "topic":"cars"
+				  }
+				}
+				""";
+
+		// Execute test and check response
+		mockMvc.perform(post(API)
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding("UTF-8")
+						.content(requestJson))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testWithOtherRpcMethod() throws Exception {
+
+		// Payload with RPC method that not exists
+		String requestJson = """
+				{
+				  "id":1,
+				  "jsonrpc":"2.0",
+				  "method":"OtherRpcMethod",
+				  "params":{
+				    "topic":"cars"
+				  }
+				}
+				""";
+
+		// Execute test and check response
+		mockMvc.perform(post(API)
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding("UTF-8")
+						.content(requestJson))
+				.andExpect(status().isBadRequest());
 	}
 }
