@@ -47,6 +47,6 @@ Accept: application/json
   "method": "GiveMeAdvice",
   "params": {
     "topic": "love",
-    "amount": 3
+    "amount": 2
   }
 }

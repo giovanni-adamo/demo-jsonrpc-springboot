@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 @SpringBootTest
@@ -87,6 +88,7 @@ public class AdviceControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("UTF-8")
 						.content(requestJson))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.error").exists());
 	}
 }

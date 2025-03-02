@@ -1,6 +1,8 @@
 # Springboot API with JSON-RPC method
 Progetto DEMO che espone un API REST che chiama un metodo json-rpc
 
+Prerequisito: JDK 17
+
 ---
 
 ## Compilazione dell'applicazione:
@@ -8,7 +10,7 @@ Progetto DEMO che espone un API REST che chiama un metodo json-rpc
 #### Setup ENV variables (Windows - powershell):
 ```
 # Imposta JAVA_HOME per la sessione corrente:
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-17.0.2"
 
 # Aggiunge la cartella /bin della JDK in cima al PATH corrente:
 $env:Path="$env:JAVA_HOME\bin;$env:Path"

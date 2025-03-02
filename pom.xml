@@ -66,11 +66,17 @@
             <version>1.6</version>
         </dependency>
 
-        <!--<dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>jakarta.jws</groupId>
             <artifactId>jakarta.jws-api</artifactId>
             <version>3.0.0</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
     <build>
