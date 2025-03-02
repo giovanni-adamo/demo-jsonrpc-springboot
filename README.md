@@ -23,9 +23,14 @@ export JAVA_HOME=/usr/lib/jvm/jdk-version
 export PATH=$JAVA_HOME/bin:$PATH
 ```
 
-#### Compilazione applicazione:
+#### Compilazione applicazione (con test):
 ```
 .\mvnw.cmd clean install
+```
+
+#### Compilazione applicazione (senza test):
+```
+.\mvnw.cmd clean install -DskipTests
 ```
 
 ---
