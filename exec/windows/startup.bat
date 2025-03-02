@@ -1,7 +1,7 @@
 @echo off
 
 REM (Opzionale) Se vuoi impostare qui dentro il tuo JAVA_HOME specifico:
-REM set JAVA_HOME=C:\Program Files\Java\jdk-17
+REM set JAVA_HOME=C:\Program Files\Java\jdk-17.0.2
 REM set PATH=%JAVA_HOME%\bin;%PATH%
 
 REM Avvia l'esecuzione del JAR

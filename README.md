@@ -37,6 +37,9 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 ## Startup/Shudown dell'applicazione:
 
+Assicurarsi di aver configurato il path della propria JDK.  
+Decommentare e modificare opportunamente le righe relative al path della propria JDK, all'interno dei file .bat/.sh
+
 ### Script per Windows:
 #### Startup applicazione:
 ```
