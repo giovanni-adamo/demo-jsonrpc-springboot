@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -60,13 +61,14 @@ public class AdviceServiceImpl implements AdviceService {
 
             // Read API result and build advice list
             int elem = jsonNode.path("slips").size();
-            if (elem >= amount) {
-                for (int i = 0; i < amount; i++) {
-                    String advice = jsonNode.path("slips").get(i).path("advice").asText();
-                    if (advice != null) {
-                        adviceList.add(advice);
-                    }
-                }
+            if (elem > 0) {
+
+                int limit = Math.min(elem, amount);
+
+                IntStream.range(0, limit)
+                        .mapToObj(i -> jsonNode.path("slips").get(i).path("advice").asText())
+                        .filter(advice -> advice != null)
+                        .forEach(adviceList::add);
             }
 
             return adviceList;
