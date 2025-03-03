@@ -1,7 +1,7 @@
 demo:
   advice-api-endpoint: https://api.adviceslip.com/advice/search/
   cache:
-    enabled: false
+    enabled: true
     time-unit: MINUTES
     duration: 5
 
